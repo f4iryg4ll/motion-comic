@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layar Melaka</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  
+  <!-- Hang Tuah Desktop Pet CSS -->
+  <style>
+    /* Hang Tuah Desktop Pet Styles */
+    .hang-tuah-character {
+      position: fixed;
+      width: 64px;
+      height: 64px;
+      z-index: 9999;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+
+    .character-sprite {
+      width: 400%;
+      height: 500%;
+      background-image: url('images/hangtuah.png'); /* Your PNG file path */
+      background-size: contain;
+      background-repeat: no-repeat;
+      transform-origin: bottom center;
+      animation: idle 3s ease-in-out infinite;
+      image-rendering: pixelated;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .speech-bubble {
+      position: absolute;
+      top: -55px;
+      left: -45px;
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      color: #8B4513;
+      padding: 10px 15px;
+      border-radius: 55px;
+      font-size: 9px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.3s ease;
+      max-width: 180px;
+      text-align: center;
+      border: 2px solid #FFD700;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 45px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #fff;
+    }
+
+    .speech-bubble.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes idle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    @keyframes walking {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      25% { transform: translateY(-4px) rotate(0deg); }
+      50% { transform: translateY(0px) rotate(2deg); }
+      75% { transform: translateY(-4px) rotate(0deg); }
+    }
+
+    @keyframes jumping {
+      0% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-25px) scale(1.15); }
+      100% { transform: translateY(0px) scale(1); }
+    }
+
+    @keyframes specialGlow {
+      0% { filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+      50% { filter: drop-shadow(0 0 20px #FFD700) drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+      100% { filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+    }
+
+    .walking .character-sprite {
+      animation: walking 0.5s ease-in-out infinite;
+    }
+
+    .jumping .character-sprite {
+      animation: jumping 0.8s ease-out;
+    }
+
+    .special-action .character-sprite {
+      animation: specialGlow 1s ease-in-out;
+    }
+
+    .hang-tuah-character:hover {
+      transform: scale(1.1);
+    }
+
+    .facing-left .character-sprite {
+      transform: scaleX(-1);
+    }
+
+    /* Hide on mobile for performance */
+    @media (max-width: 768px) {
+      .hang-tuah-character {
+        display: none;
+      }
+    }
+
+    /* Special effects for topic completion */
+    .celebration-effect {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3em;
+      z-index: 10000;
+      animation: celebrationBounce 2s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes celebrationBounce {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+  </style>
+
+  <style>
+  .project-section {
+    display: flex;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 40px auto;
+    max-width: 1000px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .project-text {
+    flex: 1 1 60%;
+    padding-right: 20px;
+  }
+
+  .project-image {
+    flex: 1 1 40%;
+    text-align: center;
+  }
+
+  .project-image img {
+    max-width: 100%;
+    border-radius: 15px;
+  }
+
+  .project-text h2 {
+    margin-bottom: 15px;
+    font-size: 24px;
+  }
+
+  .project-text ul {
+    padding-left: 20px;
+  }
+
+  /* Gallery Topic Boxes - Updated Styles */
+  .topic-box {
+    background: rgba(114, 48, 15, 0.827);
+    border: 2px solid #fff;
+    border-radius: 10px;
+    padding: 30px;
+    width: 350px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+    display: block;
+  }
+
+  .topic-box:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+    color: white;
+  }
+
+  .topic-box img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 15px;
+  }
+
+  .topic-box p {
+    margin: 0;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Progress indicators */
+  .topic-progress {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .completed {
+    background: #4caf50 !important;
+  }
+
+  .topic-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 10;
+  }
+
+  .topic-box {
+    position: relative; /* Important for status positioning */
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .topic-box.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .topic-box.locked:hover {
+    transform: none;
+  }
+
+  .status-complete {
+    background: #4caf50 !important;
+  }
+
+  .status-available {
+    background: #fdd835 !important;
+    color: black !important;
+  }
+
+  @media (max-width: 768px) {
+    .project-section {
+      flex-direction: column;
+    }
+
+    .project-text, .project-image {
+      flex: 1 1 100%;
+      padding: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="#home">Laman Utama</a>
+    <a href="#about">Tentang Projek</a>
+    <a href="#gallery">Galeri Komik</a>
+    <a href="#contact">Hubungi Kami</a>
+  </nav>
+
+  <!-- Hero Section with Video -->
+  <section id="home" class="hero">
+   <video autoplay muted loop playsinline width="100%" height="auto">
+  <source src="bgvideo.mp4" type="video/mp4">
+  Video tak boleh dimainkan.
+</video>
+
+    <div class="overlay">
+      <div class="hero-content">
+        <h1 class="main-title">LAYAR MELAKA</h1>
+        <p class="subtitle">Belayar Menyusuri Lagenda Kesultanan</p>
+        <a href="#about" class="scroll-button">Mula Teroka!</a>
+      </div>
+    </div>
+  </section>
+
+<section id="about" class="about-background">
+  <div class="project-section">
+    <div class="project-text">
+    <h2>Tentang Projek</h2>
+    Projek ini merupakan Projek Tahun Akhir (FYP) yang bertujuan untuk membangunkan sebuah motion comic interaktif bertemakan sejarah Bab 5 Tingkatan 2, iaitu mengenai Kesultanan Melayu Melaka. Projek ini dibangunkan khas untuk pelajar sekolah menengah sebagai alternatif kepada pembelajaran tradisional yang berasaskan buku teks.
+
+Dengan penggunaan elemen visual seperti animasi 2D, suara latar, dan kuiz interaktif, projek ini bertujuan untuk menarik minat pelajar terhadap mata pelajaran Sejarah serta membantu mereka memahami dan mengingati isi kandungan dengan lebih berkesan.
+
+Antara ciri utama dalam projek ini termasuk penceritaan berasaskan panel, visual dinamik, kesan bunyi, dan kuiz yang perlu dijawab sebelum pelajar boleh bergerak ke panel seterusnya. Pendekatan ini bukan sahaja menjadikan pembelajaran lebih menyeronokkan, malah meningkatkan penglibatan pelajar secara aktif.
+</div>
+
+<div class="project-image">
+      <img src="images/bukuteks.jpg" alt="Visual Projek">
+    </div>
+  </div>
+</section>
+
+<!-- Updated Gallery Section (Only 2 Topics) -->
+<section id="gallery" class="gallery-section">
+  <h2>Galeri Komik</h2>
+
+  <div class="topic-container">
+    <!-- Topik 1 - Always accessible -->
+    <div class="topic-box" onclick="window.location.href='topik1.html'" id="topik1-box">
+      <div class="topic-status" id="topik1-status">🚀 Mula</div>
+      <img src="images/topik1.png" alt="Topik 1">
+      <p>Topik 1: Asal Usul Melaka</p>
+    </div>
+
+    <!-- Topik 2 - Unlocked after topik 1 -->
+    <div class="topic-box" onclick="goToTopic('topik2')" id="topik2-box" style="opacity: 0.5;">
+      <div class="topic-status" id="topik2-status">🔒 Dikunci</div>
+      <img src="images/topik2.jpeg" alt="Topik 2">
+      <p>Topik 2: Zaman Kegemilangan Melaka</p>
+    </div>
+  </div>
+</section>
+
+<!-- Hang Tuah Desktop Pet -->
+<div class="hang-tuah-character" id="hangTuah">
+  <div class="character-sprite" id="characterSprite"></div>
+  <div class="speech-bubble" id="speechBubble">Daulat Tuanku!</div>
+</div>
+
+<!-- JavaScript -->
+<script>
+// Hang Tuah Character Class
+class HangTuahCharacter {
+  constructor() {
+    this.character = document.getElementById('hangTuah');
+    this.sprite = document.getElementById('characterSprite');
+    this.speechBubble = document.getElementById('speechBubble');
+    
+    if (!this.character) return;
+    
+    this.x = 100;
+    this.y = window.innerHeight - 120;
+    this.targetX = this.x;
+    this.targetY = this.y;
+    this.isMoving = false;
+    this.facingLeft = false;
+    
+    this.phrases = [
+      "Daulat Tuanku!",
+      "Selamat datang ke Layar Melaka!",
+      "Mari belajar sejarah Melaka!",
+      "Tak kan Melayu hilang di dunia!",
+      "Setia pada Sultan!",
+      "Melaka Darul Naim!",
+      "Jangan lupa asal usul kita!",
+      "Pantang mundur!",
+      "Teroka kedua-dua topik!",
+      "Sejarah itu penting!"
+    ];
+    
+    this.topicPhrases = {
+      topic1: [
+        "Mula dengan Asal Usul Melaka!",
+        "Kisah Parameswara menanti!",
+        "Tempat bersejarah ini!"
+      ],
+      topic2: [
+        "Zaman kegemilangan Melaka!",
+        "Era perdagangan yang gemilang!",
+        "Pelabuhan terhebat Asia!"
+      ]
+    };
+    
+    this.init();
+    this.startIdleBehavior();
+  }
+
+  init() {
+    this.character.style.left = this.x + 'px';
+    this.character.style.top = this.y + 'px';
+    
+    this.character.addEventListener('click', () => {
+      this.speak();
+      this.jump();
+    });
+
+    // Patrol behavior
+    setInterval(() => {
+      if (!this.isMoving && Math.random() < 0.5) {
+        this.smartMove();
+      }
+    }, Math.random() * 15000 + 20000);
+
+    window.addEventListener('resize', () => {
+      this.constrainPosition();
+    });
+
+    // Double click for special action
+    this.character.addEventListener('dblclick', () => {
+      this.specialAction();
+    });
+
+    // Listen for topic completion celebrations
+    window.addEventListener('topicCompleted', (e) => {
+      this.celebrateCompletion(e.detail.topic);
+    });
+  }
+
+  speak(customPhrase = null) {
+    let phrase;
+    if (customPhrase) {
+      phrase = customPhrase;
+    } else {
+      phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
+    }
+    
+    this.speechBubble.textContent = phrase;
+    this.speechBubble.classList.add('show');
+    
+    setTimeout(() => {
+      this.speechBubble.classList.remove('show');
+    }, 3000);
+  }
+
+  jump() {
+    this.character.classList.add('jumping');
+    setTimeout(() => {
+      this.character.classList.remove('jumping');
+    }, 800);
+  }
+
+  specialAction() {
+    this.speak("⚔️ KEKUATAN TAMING SARI! ⚔️");
+    this.character.classList.add('special-action');
+    
+    // Multiple jumps
+    for(let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        this.jump();
+      }, i * 300);
+    }
+    
+    setTimeout(() => {
+      this.character.classList.remove('special-action');
+    }, 1000);
+  }
+
+  celebrateCompletion(topic) {
+    // Move to center and celebrate
+    const centerX = (window.innerWidth - 70) / 2;
+    const centerY = (window.innerHeight - 70) / 2;
+    
+    this.moveTo(centerX, centerY, () => {
+      this.specialAction();
+      
+      if (this.topicPhrases[topic]) {
+        const topicPhrase = this.topicPhrases[topic][Math.floor(Math.random() * this.topicPhrases[topic].length)];
+        setTimeout(() => {
+          this.speak(`🎉 Tahniah! ${topicPhrase}`);
+        }, 2000);
+      }
+      
+      // Add celebration effect
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration-effect';
+      celebration.textContent = '🎉🎊✨';
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => {
+        document.body.removeChild(celebration);
+      }, 2000);
+    });
+  }
+
+  updateDirection() {
+    if (this.facingLeft) {
+      this.character.classList.add('facing-left');
+    } else {
+      this.character.classList.remove('facing-left');
+    }
+  }
+
+  moveTo(targetX, targetY, callback) {
+    if (this.isMoving) return;
+    
+    this.isMoving = true;
+    this.targetX = Math.max(0, Math.min(window.innerWidth - 70, targetX));
+    this.targetY = Math.max(0, Math.min(window.innerHeight - 70, targetY));
+    
+    this.facingLeft = this.targetX < this.x;
+    this.updateDirection();
+    
+    this.character.classList.add('walking');
+    
+    const moveAnimation = () => {
+      const dx = this.targetX - this.x;
+      const dy = this.targetY - this.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance < 3) {
+        this.x = this.targetX;
+        this.y = this.targetY;
+        this.character.style.left = this.x + 'px';
+        this.character.style.top = this.y + 'px';
+        this.character.classList.remove('walking');
+        this.isMoving = false;
+        if (callback) callback();
+        return;
+      }
+      
+      const speed = 2;
+      this.x += (dx / distance) * speed;
+      this.y += (dy / distance) * speed;
+      
+      this.character.style.left = this.x + 'px';
+      this.character.style.top = this.y + 'px';
+      
+      requestAnimationFrame(moveAnimation);
+    };
+    
+    requestAnimationFrame(moveAnimation);
+  }
+
+  smartMove() {
+    const positions = [
+      { x: 50, y: window.innerHeight - 120 },
+      { x: window.innerWidth - 120, y: window.innerHeight - 120 },
+      { x: 50, y: 50 },
+      { x: window.innerWidth - 120, y: 50 },
+      { x: (window.innerWidth - 70) / 2, y: window.innerHeight - 120 }
+    ];
+    
+    const randomPos = positions[Math.floor(Math.random() * positions.length)];
+    this.moveTo(randomPos.x, randomPos.y);
+  }
+
+  constrainPosition() {
+    this.x = Math.max(0, Math.min(window.innerWidth - 70, this.x));
+    this.y = Math.max(0, Math.min(window.innerHeight - 70, this.y));
+    this.character.style.left = this.x + 'px';
+    this.character.style.top = this.y + 'px';
+  }
+
+  startIdleBehavior() {
+    // Random speaks
+    setInterval(() => {
+      if (Math.random() < 0.2 && !this.isMoving) {
+        this.speak();
+      }
+    }, Math.random() * 30000 + 45000);
+
+    // Random jumps
+    setInterval(() => {
+      if (Math.random() < 0.1 && !this.isMoving) {
+        this.jump();
+      }
+    }, Math.random() * 20000 + 40000);
+  }
+}
+
+// Topic Management (Updated for 2 topics only)
+document.addEventListener('DOMContentLoaded', function() {
+  updateTopicStatus();
+  
+  // Initialize Hang Tuah
+  if (document.getElementById('hangTuah')) {
+    window.hangTuahCharacter = new HangTuahCharacter();
+    
+    // Welcome message
+    setTimeout(() => {
+      window.hangTuahCharacter.speak("Selamat datang ke Layar Melaka! 👑");
+    }, 3000);
+  }
+});
+
+function updateTopicStatus() {
+  const topic1Complete = localStorage.getItem('topic1Complete') === 'true';
+  const topic2Complete = localStorage.getItem('topic2Complete') === 'true';
+  
+  const topik1Box = document.getElementById('topik1-box');
+  const topik1Status = document.getElementById('topik1-status');
+  const topik2Box = document.getElementById('topik2-box');
+  const topik2Status = document.getElementById('topik2-status');
+
+  // Topik 1 status
+  if (topic1Complete) {
+    topik1Status.textContent = '✅ Selesai';
+    topik1Status.classList.add('status-complete');
+  } else {
+    topik1Status.textContent = '🚀 Mula';
+    topik1Status.classList.add('status-available');
+  }
+
+  // Topik 2 status
+  if (topic1Complete) {
+    topik2Box.style.opacity = '1';
+    topik2Box.classList.remove('locked');
+    if (topic2Complete) {
+      topik2Status.textContent = '✅ Selesai';
+      topik2Status.classList.add('status-complete');
+    } else {
+      topik2Status.textContent = '🚀 Mula';
+      topik2Status.classList.add('status-available');
+    }
+  } else {
+    topik2Box.classList.add('locked');
+  }
+
+  // Check if both topics completed
+  if (topic1Complete && topic2Complete) {
+    localStorage.setItem('allTopicsComplete', 'true');
+    setTimeout(() => {
+      if (window.hangTuahCharacter) {
+        window.hangTuahCharacter.speak("🏆 Semua topik selesai! Tahniah pahlawan Melaka! 🏆");
+      }
+    }, 1000);
+  }
+}
+
+function goToTopic(topicName) {
+  const topic1Complete = localStorage.getItem('topic1Complete') === 'true';
+  
+  if (topicName === 'topik2' && !topic1Complete) {
+    if (window.hangTuahCharacter) {
+      window.hangTuahCharacter.speak("Sila selesaikan Topik 1 dulu, wahai pelajar!");
+    }
+    alert('Sila selesaikan Topik 1 terlebih dahulu!');
+    return;
+  }
+  
+  window.location.href = topikName + '.html';
+}
+
+// Function to be called when completing topics
+function completeTopicAndReturn(topicNumber) {
+  localStorage.setItem(`topic${topicNumber}Complete`, 'true');
+  
+  // Trigger celebration event
+  window.dispatchEvent(new CustomEvent('topicCompleted', {
+    detail: { topic: `topic${topicNumber}` }
+  }));
+  
+  updateTopicStatus();
+}
+</script>
+
+</body>
+</html>

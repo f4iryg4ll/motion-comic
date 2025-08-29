@@ -1,0 +1,232 @@
+/* Reset & Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  body {
+  font-family: 'Poppins', sans-serif;
+  color: black; 
+}
+
+  background-color: #000;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  z-index: 1000;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: #fdd835;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  /*overflow: hidden;*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+
+/* Overlay Layer */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1;
+}
+
+/* Hero Content (Centered Text) */
+.hero-content {
+  text-align: center;
+  color: black;
+}
+
+.main-title {
+  font-size: 120px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  opacity: 0;
+  transform: translateY(-50px);
+  animation: fadeSlideIn 1.5s ease-out forwards;
+  animation-delay: 0.3s;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.subtitle {
+  font-size: 30px;
+  font-family: 'Poppins', sans-serif;
+  font-style: italic;
+  margin-top: 10px;
+  margin-bottom: 40px;
+  opacity: 0;
+  transform: translateY(-30px);
+  animation: fadeSlideIn 1.5s ease-out forwards;
+  animation-delay: 0.8s;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.scroll-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #fdd835;
+  color: black;
+  font-weight: bold;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  margin-top: -30px; /* Naikkan ke atas sikit */
+}
+
+.scroll-button:hover {
+  background: #fff176;
+}
+
+/* Animations */
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#about {
+  background-image: url('images/bgimage.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 80px 20px;
+  color: black;
+  position: relative;
+  min-height: 100vh;
+  z-index: 1;
+  margin-top: 100px; /* 👈 Jarak dari atas (elak potong) */
+}
+
+/*
+.about-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1); /* Optional: soft background 
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+}*/
+
+.gallery-section {
+min-height: 100vh; /* penuh satu screen */
+font-size: 50px;
+font-weight: bold;
+  padding: 60px 20px;
+  background-image: url('images/bg.jpg'); /* Ganti dengan nama fail sebenar */
+  background-size: cover;
+  background-position: center;
+  color: black;
+  text-align: center;
+}
+
+.topic-container {
+font-size: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.topic-box {
+  background: rgba(114, 48, 15, 0.827);
+  border: 2px solid #fff;
+  border-radius: 10px;
+  padding: 30px;
+  width: 350px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.topic-box img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.topic-box:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.video-hidden {
+  display: none;
+  margin-top: 40px;
+}
+
+.video-visible {
+  display: block;
+}
+
+#mainVideo {
+  width: 80%;
+  max-width: 800px;
+  border-radius: 12px;
+}
+
+#video-player button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #4a4a4a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+#video-player button:hover {
+  background-color: #333;
+}
+
