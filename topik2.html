@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topik 2 - Zaman Kegemilangan Melaka</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: 
+        linear-gradient(rgba(0,0,0,0.5), rgba(255, 255, 255, 0.3)),
+        url('images/topik2bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: rgba(0,0,0,0.8);
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fdd835;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back-btn:hover {
+      background: #fff176;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .video-wrapper {
+      background: rgba(102, 99, 99, 0.667);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 10px;
+    }
+
+    .video-info {
+      margin: 20px 0;
+    }
+
+    .segment-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .segment-counter {
+      opacity: 0.8;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      margin: 20px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #fdd835;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #fdd835;
+      color: black;
+    }
+
+    .btn-primary:hover {
+      background: #fff176;
+    }
+
+    .btn-secondary {
+      background: #fdd835;
+      color: black;
+    }
+
+    .btn-secondary:hover {
+      background: #fff176;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .completion-section {
+      display: none;
+      margin-top: 40px;
+      padding: 30px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 15px;
+    }
+
+    .completion-message {
+      font-size: 24px;
+      color: #fdd835;
+      margin-bottom: 20px;
+    }
+
+    .quiz-prompt {
+      background: rgba(255, 215, 53, 0.1);
+      border: 2px solid #fdd835;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .quiz-prompt h3 {
+      color: #fdd835;
+      margin-bottom: 10px;
+    }
+
+    .quiz-btn {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    .quiz-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    /* Hang Tuah Desktop Pet Styles */
+    .hang-tuah-character {
+      position: fixed;
+      width: 64px;
+      height: 64px;
+      z-index: 9999;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+
+    .character-sprite {
+      width: 400%;
+      height: 500%;
+      background-image: url('images/hangtuah.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      transform-origin: bottom center;
+      animation: idle 3s ease-in-out infinite;
+      image-rendering: pixelated;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .speech-bubble {
+      position: absolute;
+      top: -55px;
+      left: -45px;
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      color: #8B4513;
+      padding: 10px 15px;
+      border-radius: 55px;
+      font-size: 9px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.3s ease;
+      max-width: 180px;
+      text-align: center;
+      border: 2px solid #FFD700;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 45px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #fff;
+    }
+
+    .speech-bubble.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes idle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    @keyframes walking {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      25% { transform: translateY(-4px) rotate(0deg); }
+      50% { transform: translateY(0px) rotate(2deg); }
+      75% { transform: translateY(-4px) rotate(0deg); }
+    }
+
+    @keyframes jumping {
+      0% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-25px) scale(1.15); }
+      100% { transform: translateY(0px) scale(1); }
+    }
+
+    @keyframes specialGlow {
+      0% { filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+      50% { filter: drop-shadow(0 0 20px #FFD700) drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+      100% { filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); }
+    }
+
+    .walking .character-sprite {
+      animation: walking 0.5s ease-in-out infinite;
+    }
+
+    .jumping .character-sprite {
+      animation: jumping 0.8s ease-out;
+    }
+
+    .special-action .character-sprite {
+      animation: specialGlow 1s ease-in-out;
+    }
+
+    .hang-tuah-character:hover {
+      transform: scale(1.1);
+    }
+
+    .facing-left .character-sprite {
+      transform: scaleX(-1);
+    }
+
+    /* Hide on mobile for performance */
+    @media (max-width: 768px) {
+      .hang-tuah-character {
+        display: none;
+      }
+      .controls { flex-direction: column; align-items: center; }
+      .btn { width: 200px; }
+    }
+
+    /* Special effects for topic completion */
+    .celebration-effect {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3em;
+      z-index: 10000;
+      animation: celebrationBounce 2s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes celebrationBounce {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="index.html" class="back-btn">← Kembali</a>
+    <h1>Topik 2: Zaman Kegemilangan Melaka</h1>
+  </div>
+
+  <div class="container">
+    <div class="video-wrapper">
+      <video id="mainVideo" controls>
+        <source src="videos/topik2-segment1.mp4" type="video/mp4">
+        Video tidak dapat dimainkan.
+      </video>
+      
+      <div class="video-info">
+        <div class="segment-title" id="segmentTitle">Segmen 1: Sultan Muzaffar Shah</div>
+        <div class="segment-counter" id="segmentCounter">1 daripada 6</div>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 16.67%;"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-secondary" id="prevBtn" onclick="previousSegment()" disabled>
+        ← Sebelumnya
+      </button>
+      <button class="btn btn-secondary" onclick="toggleFullscreen()">
+        📺 Fullscreen
+      </button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextSegment()">
+        Seterusnya →
+      </button>
+    </div>
+
+    <div class="completion-section" id="completionSection">
+      <div class="completion-message">🎉 Tahniah! Topik 2 Selesai!</div>
+      
+      <div class="quiz-prompt">
+        <h3>👑 Uji Pengetahuan Zaman Kegemilangan!</h3>
+        <p>Cuba kuiz Topik 2 untuk menguji pemahaman anda tentang zaman kegemilangan Melaka!</p>
+        <a href="quiztopik2.html" class="quiz-btn">👑 Mula Kuiz Topik 2</a>
+      </div>
+      
+      <p>Tahniah! Anda telah menyelesaikan semua topik dalam Layar Melaka!</p>
+      <br>
+      <a href="index.html" class="btn btn-primary">← Kembali ke Laman Utama</a>
+    </div>
+  </div>
+
+  <!-- Hang Tuah Desktop Pet -->
+  <div class="hang-tuah-character" id="hangTuah">
+    <div class="character-sprite" id="characterSprite"></div>
+    <div class="speech-bubble" id="speechBubble">Zaman kegemilangan Melaka!</div>
+  </div>
+
+  <script>
+    // Hang Tuah Character Class
+    class HangTuahCharacter {
+      constructor() {
+        this.character = document.getElementById('hangTuah');
+        this.sprite = document.getElementById('characterSprite');
+        this.speechBubble = document.getElementById('speechBubble');
+        
+        if (!this.character) return;
+        
+        this.x = 100;
+        this.y = window.innerHeight - 120;
+        this.targetX = this.x;
+        this.targetY = this.y;
+        this.isMoving = false;
+        this.facingLeft = false;
+        
+        this.phrases = [
+          "Zaman kegemilangan Melaka!",
+          "Era perdagangan yang gemilang!",
+          "Pelabuhan terhebat Asia!",
+          "Sultan Muzaffar Shah yang bijaksana!",
+          "Laksamana Hang Tuah setia!",
+          "Melaka pusat dunia!",
+          "Sistem pemerintahan yang hebat!",
+          "Ekonomi yang berkembang pesat!",
+          "Kegemilangan yang tiada tara!",
+          "Sejarah yang membanggakan!",
+          "Jangan lupa cuba kuiz nanti!"
+        ];
+        
+        this.init();
+        this.startIdleBehavior();
+      }
+
+      init() {
+        this.character.style.left = this.x + 'px';
+        this.character.style.top = this.y + 'px';
+        
+        this.character.addEventListener('click', () => {
+          this.speak();
+          this.jump();
+        });
+
+        setInterval(() => {
+          if (!this.isMoving && Math.random() < 0.3) {
+            this.smartMove();
+          }
+        }, Math.random() * 20000 + 25000);
+
+        window.addEventListener('resize', () => {
+          this.constrainPosition();
+        });
+
+        this.character.addEventListener('dblclick', () => {
+          this.specialAction();
+        });
+      }
+
+      speak(customPhrase = null) {
+        let phrase;
+        if (customPhrase) {
+          phrase = customPhrase;
+        } else {
+          phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
+        }
+        
+        this.speechBubble.textContent = phrase;
+        this.speechBubble.classList.add('show');
+        
+        setTimeout(() => {
+          this.speechBubble.classList.remove('show');
+        }, 3000);
+      }
+
+      jump() {
+        this.character.classList.add('jumping');
+        setTimeout(() => {
+          this.character.classList.remove('jumping');
+        }, 800);
+      }
+
+      specialAction() {
+        this.speak("⚔️ Kegemilangan Melaka abadi! ⚔️");
+        this.character.classList.add('special-action');
+        
+        for(let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            this.jump();
+          }, i * 300);
+        }
+        
+        setTimeout(() => {
+          this.character.classList.remove('special-action');
+        }, 1000);
+      }
+
+      celebrateCompletion() {
+        const centerX = (window.innerWidth - 70) / 2;
+        const centerY = (window.innerHeight - 70) / 2;
+        
+        this.moveTo(centerX, centerY, () => {
+          this.specialAction();
+          
+          setTimeout(() => {
+            this.speak("🎉 Tahniah! Topik 2 selesai! Jangan lupa cuba kuiz!");
+          }, 2000);
+          
+          const celebration = document.createElement('div');
+          celebration.className = 'celebration-effect';
+          celebration.textContent = '🏆👑✨';
+          document.body.appendChild(celebration);
+          
+          setTimeout(() => {
+            if (document.body.contains(celebration)) {
+              document.body.removeChild(celebration);
+            }
+          }, 2000);
+        });
+      }
+
+      updateDirection() {
+        if (this.facingLeft) {
+          this.character.classList.add('facing-left');
+        } else {
+          this.character.classList.remove('facing-left');
+        }
+      }
+
+      moveTo(targetX, targetY, callback) {
+        if (this.isMoving) return;
+        
+        this.isMoving = true;
+        this.targetX = Math.max(0, Math.min(window.innerWidth - 70, targetX));
+        this.targetY = Math.max(0, Math.min(window.innerHeight - 70, targetY));
+        
+        this.facingLeft = this.targetX < this.x;
+        this.updateDirection();
+        
+        this.character.classList.add('walking');
+        
+        const moveAnimation = () => {
+          const dx = this.targetX - this.x;
+          const dy = this.targetY - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 3) {
+            this.x = this.targetX;
+            this.y = this.targetY;
+            this.character.style.left = this.x + 'px';
+            this.character.style.top = this.y + 'px';
+            this.character.classList.remove('walking');
+            this.isMoving = false;
+            if (callback) callback();
+            return;
+          }
+          
+          const speed = 2;
+          this.x += (dx / distance) * speed;
+          this.y += (dy / distance) * speed;
+          
+          this.character.style.left = this.x + 'px';
+          this.character.style.top = this.y + 'px';
+          
+          requestAnimationFrame(moveAnimation);
+        };
+        
+        requestAnimationFrame(moveAnimation);
+      }
+
+      smartMove() {
+        const positions = [
+          { x: 50, y: window.innerHeight - 120 },
+          { x: window.innerWidth - 120, y: window.innerHeight - 120 },
+          { x: 50, y: 50 },
+          { x: window.innerWidth - 120, y: 50 },
+          { x: (window.innerWidth - 70) / 2, y: window.innerHeight - 120 }
+        ];
+        
+        const randomPos = positions[Math.floor(Math.random() * positions.length)];
+        this.moveTo(randomPos.x, randomPos.y);
+      }
+
+      constrainPosition() {
+        this.x = Math.max(0, Math.min(window.innerWidth - 70, this.x));
+        this.y = Math.max(0, Math.min(window.innerHeight - 70, this.y));
+        this.character.style.left = this.x + 'px';
+        this.character.style.top = this.y + 'px';
+      }
+
+      startIdleBehavior() {
+        setInterval(() => {
+          if (Math.random() < 0.15 && !this.isMoving) {
+            this.speak();
+          }
+        }, Math.random() * 35000 + 50000);
+
+        setInterval(() => {
+          if (Math.random() < 0.08 && !this.isMoving) {
+            this.jump();
+          }
+        }, Math.random() * 25000 + 45000);
+      }
+    }
+
+    // Video Segments Management
+    const segments = [
+      { title: "Segmen 1: Kepimpinan Raja Yang Berwibawa", video: "videos/t2segmen1.mp4" },
+      { title: "Segmen 2: Sistem Pentadbiran Empat Lipatan", video: "videos/t2segmen2.mp4" },
+      { title: "Segmen 3: Sistem Perundangan Yang Mantap", video: "videos/t2segmen3.mp4" },
+      { title: "Segmen 4: Empayar Yang Luas", video: "videos/t2segmen4.mp4" },
+      { title: "Segmen 5: Pusat Penyebaran Islam", video: "videos/t2segmen5.mp4" },
+    ];
+
+    let currentSegment = 0;
+
+    function loadSegment(index) {
+      const video = document.getElementById('mainVideo');
+      const segmentTitle = document.getElementById('segmentTitle');
+      const segmentCounter = document.getElementById('segmentCounter');
+      const progressFill = document.getElementById('progressFill');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      video.src = segments[index].video;
+      video.load();
+
+      segmentTitle.textContent = segments[index].title;
+      segmentCounter.textContent = `${index + 1} daripada ${segments.length}`;
+      progressFill.style.width = `${((index + 1) / segments.length) * 100}%`;
+
+      prevBtn.disabled = (index === 0);
+      nextBtn.textContent = (index === segments.length - 1) ? "Selesai ✓" : "Seterusnya →";
+      
+      if (window.hangTuahCharacter) {
+        setTimeout(() => {
+          window.hangTuahCharacter.speak(`Segmen ${index + 1} - Era kegemilangan!`);
+        }, 1000);
+      }
+    }
+
+    function nextSegment() {
+      if (currentSegment < segments.length - 1) {
+        currentSegment++;
+        loadSegment(currentSegment);
+      } else {
+        document.getElementById('completionSection').style.display = 'block';
+        document.getElementById('nextBtn').style.display = 'none';
+        
+        if (window.hangTuahCharacter) {
+          setTimeout(() => {
+            window.hangTuahCharacter.celebrateCompletion();
+          }, 500);
+        }
+      }
+    }
+
+    function previousSegment() {
+      if (currentSegment > 0) {
+        currentSegment--;
+        loadSegment(currentSegment);
+        document.getElementById('completionSection').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+      }
+    }
+
+    function toggleFullscreen() {
+      const video = document.getElementById('mainVideo');
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      }
+    }
+
+    document.getElementById('mainVideo').addEventListener('ended', function() {
+      setTimeout(() => {
+        if (currentSegment < segments.length - 1) {
+          nextSegment();
+        } else {
+          document.getElementById('completionSection').style.display = 'block';
+          document.getElementById('nextBtn').style.display = 'none';
+          
+          if (window.hangTuahCharacter) {
+            setTimeout(() => {
+              window.hangTuahCharacter.celebrateCompletion();
+            }, 500);
+          }
+        }
+      }, 1000);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      window.hangTuahCharacter = new HangTuahCharacter();
+      
+      setTimeout(() => {
+        window.hangTuahCharacter.speak("Selamat datang ke zaman kegemilangan Melaka!");
+      }, 2000);
+      
+      loadSegment(0);
+    });
+  </script>
+</body>
+</html>
